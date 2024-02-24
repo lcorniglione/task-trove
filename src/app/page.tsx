@@ -1,5 +1,5 @@
 import { api } from "@/trpc/server";
-import { Card } from "@/ui/card";
+import { Card, CardHeader, CardTitle } from "@/ui/card";
 import Link from "next/link";
 
 export default async function Home() {
@@ -12,8 +12,11 @@ export default async function Home() {
       <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
         {projects.map((project) => (
           <Link key={project.id} href={`project/${project.id}`} prefetch={true}>
-            <Card />
-            <div className="border p-8">{project.name}</div>
+            <Card className="w-[350px]">
+              <CardHeader>
+                <CardTitle>{project.name}</CardTitle>
+              </CardHeader>
+            </Card>
           </Link>
         ))}
       </div>
