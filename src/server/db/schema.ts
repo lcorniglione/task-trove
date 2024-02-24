@@ -24,6 +24,7 @@ export const projects = createTable(
   {
     id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
     name: varchar("name", { length: 256 }),
+    description: varchar("description", { length: 256 }),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -68,7 +69,7 @@ export const tasks = createTable(
   {
     id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
     name: varchar("name", { length: 256 }),
-    author: varchar("name", { length: 256 }), // In the future it's gonna be user
+    author: varchar("author", { length: 256 }), // In the future it's gonna be user
     positionInsideColumn: int("positionInsideColumn"),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)

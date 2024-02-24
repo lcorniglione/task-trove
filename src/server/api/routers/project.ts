@@ -19,6 +19,7 @@ export const projectRouter = createTRPCRouter({
     .query(async ({ ctx, input: { id } }) => {
       return ctx.db.query.projects.findFirst({
         where: eq(projects.id, parseInt(id)),
+        with: { columns: { with: { tasks: true } } },
       });
     }),
 });
