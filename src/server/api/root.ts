@@ -1,3 +1,4 @@
+import { columnRouter } from "@/server/api/routers/column";
 import { projectRouter } from "@/server/api/routers/project";
 import { createTRPCRouter } from "@/server/api/trpc";
 
@@ -8,6 +9,7 @@ import { createTRPCRouter } from "@/server/api/trpc";
  */
 export const appRouter = createTRPCRouter({
   project: projectRouter,
+  column: columnRouter,
 });
 
 // export type definition of API

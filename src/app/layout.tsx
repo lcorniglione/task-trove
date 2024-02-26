@@ -1,8 +1,8 @@
+import NavBar from "@/app/_components/nav-bar";
+import { ThemeProvider } from "@/app/_components/theme-provider";
 import "@/styles/globals.css";
-
-import { Inter } from "next/font/google";
-
 import { TRPCReactProvider } from "@/trpc/react";
+import { Inter } from "next/font/google";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -21,9 +21,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`font-sans ${inter.variable}`}>
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <TRPCReactProvider>
+            <NavBar />
+            {children}
+          </TRPCReactProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

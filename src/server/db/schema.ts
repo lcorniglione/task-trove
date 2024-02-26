@@ -45,6 +45,7 @@ export const columns = createTable(
     id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
     name: varchar("name", { length: 256 }),
     positionInsideProject: int("positionInsideProject"),
+    projectId: int("project_id"),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -57,7 +58,7 @@ export const columns = createTable(
 
 export const columnsRelations = relations(columns, ({ one, many }) => ({
   project: one(projects, {
-    fields: [columns.id],
+    fields: [columns.projectId],
     references: [projects.id],
   }),
 
