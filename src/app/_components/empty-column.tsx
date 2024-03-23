@@ -3,22 +3,36 @@
 import { type ColumnWithTasks } from "@/server/db/types";
 import { api } from "@/trpc/react";
 import { Button } from "@/ui/button";
+import { Form, FormControl, FormField, FormItem } from "@/ui/form";
 import { Input } from "@/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { X } from "lucide-react";
 import { useParams } from "next/navigation";
-import { useRef, useState, type ChangeEvent } from "react";
+import { useRef, useState } from "react";
 import { flushSync } from "react-dom";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
+const formSchema = z.object({
+  columnName: z.string().min(2).max(50),
+});
 
 const EmptyColumn = () => {
   const params = useParams<{ id: string }>();
   const [addingColumn, setAddingColumn] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const [inputText, setInputText] = useState("");
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      columnName: "",
+    },
+  });
 
   const ctx = api.useUtils();
   const { mutate: createColumn } = api.column.create.useMutation({
     onMutate: async (newColumn) => {
-      setInputText("");
+      form.reset();
 
       await ctx.column.getByProjectId.cancel();
 
@@ -57,12 +71,8 @@ const EmptyColumn = () => {
     setAddingColumn(false);
   };
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setInputText(e.currentTarget.value);
-  };
-
-  const onSubmit = () => {
-    createColumn({ name: inputText, projectId: parseInt(params.id) });
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    createColumn({ name: values.columnName, projectId: parseInt(params.id) });
   };
 
   return (
@@ -76,28 +86,41 @@ const EmptyColumn = () => {
         </button>
       ) : (
         <div className="w-full rounded-lg bg-black text-white  dark:bg-[#f1f2f4] dark:text-black">
-          <section className="p-2">
-            <Input
-              value={inputText}
-              onChange={handleInputChange}
-              ref={inputRef}
-              placeholder="Enter column name"
-            />
-          </section>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+              <section className="p-2">
+                <FormField
+                  control={form.control}
+                  name="columnName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          ref={inputRef}
+                          placeholder="Enter column name"
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </section>
 
-          <section className="flex p-4 align-middle">
-            <Button variant="default" size="sm" onClick={onSubmit}>
-              Apply
-            </Button>
+              <section className="flex p-4 align-middle">
+                <Button variant="default" size="sm" type="submit">
+                  Apply
+                </Button>
 
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleCancelAddColumnClick}
-            >
-              <X />
-            </Button>
-          </section>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleCancelAddColumnClick}
+                >
+                  <X />
+                </Button>
+              </section>
+            </form>
+          </Form>
         </div>
       )}
     </li>
