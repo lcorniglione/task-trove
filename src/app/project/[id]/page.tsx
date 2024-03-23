@@ -1,22 +1,18 @@
-import Column from "@/app/_components/column";
-import EmptyColumn from "@/app/_components/empty-column";
+import Columns from "@/app/_components/columns";
 import { api } from "@/trpc/server";
+import { unstable_noStore as noStore } from "next/cache";
 import { redirect } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+
 export default async function Project({ params }: { params: { id: string } }) {
-  // noStore();
+  noStore();
 
-  const project = await api.project.geyById.query({ id: params.id });
-  console.log("REVALIDATE", project);
-  if (!project) return redirect("/");
+  const columns = await api.column.getByProjectId.query({
+    projectId: params.id,
+  });
 
-  return (
-    <ol className="flex gap-4 p-8">
-      {project.columns.map((column) => (
-        <Column key={column.id} column={column} />
-      ))}
+  if (!columns) return redirect("/");
 
-      <EmptyColumn />
-    </ol>
-  );
+  return <Columns columns={columns} />;
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { type ColumnWithTasks } from "@/server/db/types";
 import { api } from "@/trpc/react";
 import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
@@ -14,35 +15,33 @@ const EmptyColumn = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [inputText, setInputText] = useState("");
 
-  const utils = api.useUtils();
-  const {} = api.project.geyById.useQuery({ id: params.id });
-  const createColumn = api.column.create.useMutation({
-    async onMutate(newColumn) {
-      await utils.project.geyById.cancel();
+  const ctx = api.useUtils();
+  const { mutate: createColumn } = api.column.create.useMutation({
+    onMutate: async (newColumn) => {
+      setInputText("");
 
-      // Get the data from the queryCache
-      const prevData = utils.project.geyById.getData({ id: params.id });
+      await ctx.column.getByProjectId.cancel();
 
-      // Optimistically update the data with our new post
-      utils.project.geyById.setData({ id: params.id }, (old) => {
-        return {
-          ...old,
-          columns: [...old?.columns, { id: "fake", ...newColumn }],
-        };
-      });
+      const prevData = ctx.column.getByProjectId.getData();
 
-      setAddingColumn(false);
+      const newColumnExtraFields: ColumnWithTasks = {
+        ...newColumn,
+        id: Math.random(),
+        tasks: [],
+        createdAt: new Date(),
+        positionInsideProject: 1,
+        updatedAt: null,
+      };
 
-      // Return the previous data so we can revert if something goes wrong
+      ctx.column.getByProjectId.setData({ projectId: params.id }, (old) => [
+        ...(old ? old : []),
+        newColumnExtraFields,
+      ]);
+
       return { prevData };
     },
-    onError(err, newPost, ctx) {
-      // If the mutation fails, use the context-value from onMutate
-      utils.project.geyById.setData({ id: params.id }, ctx.prevData);
-    },
     onSettled() {
-      // Sync with server once mutation has settled
-      utils.project.geyById.invalidate();
+      void ctx.column.getByProjectId.invalidate({ projectId: params.id });
     },
   });
 
@@ -63,11 +62,11 @@ const EmptyColumn = () => {
   };
 
   const onSubmit = () => {
-    createColumn.mutate({ name: inputText, projectId: parseInt(params.id) });
+    createColumn({ name: inputText, projectId: parseInt(params.id) });
   };
 
   return (
-    <li className="flex h-[100vh] w-[350px] flex-col">
+    <li className="flex h-[100vh] min-w-[350px] flex-col">
       {!addingColumn ? (
         <button
           className="w-full rounded-lg bg-slate-400 bg-opacity-20 p-4 text-left"

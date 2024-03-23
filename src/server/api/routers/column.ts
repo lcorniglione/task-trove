@@ -1,9 +1,19 @@
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import { columns } from "@/server/db/schema";
-import { revalidatePath } from "next/cache";
+import { eq } from "drizzle-orm";
 import { z } from "zod";
 
 export const columnRouter = createTRPCRouter({
+  getByProjectId: publicProcedure
+    .input(z.object({ projectId: z.string() }))
+    .query(async ({ ctx, input: { projectId } }) => {
+      const projectColumns = await ctx.db.query.columns.findMany({
+        where: eq(columns.projectId, parseInt(projectId)),
+        with: { tasks: true },
+      });
+
+      return projectColumns;
+    }),
   create: publicProcedure
     .input(
       z.object({
@@ -12,10 +22,8 @@ export const columnRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      /* await new Promise((resolve, reject) =>
-        setTimeout(() => resolve("done"), 10000),
-      ); */
-      await ctx.db.insert(columns).values(input);
-      revalidatePath(`project/${input.projectId}`);
+      const columnTable = await ctx.db.insert(columns).values(input);
+
+      return columnTable.insertId;
     }),
 });
