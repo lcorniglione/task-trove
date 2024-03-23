@@ -1,5 +1,6 @@
 import { columnRouter } from "@/server/api/routers/column";
 import { projectRouter } from "@/server/api/routers/project";
+import { taskRouter } from "@/server/api/routers/task";
 import { createTRPCRouter } from "@/server/api/trpc";
 
 /**
@@ -10,6 +11,7 @@ import { createTRPCRouter } from "@/server/api/trpc";
 export const appRouter = createTRPCRouter({
   project: projectRouter,
   column: columnRouter,
+  task: taskRouter,
 });
 
 // export type definition of API

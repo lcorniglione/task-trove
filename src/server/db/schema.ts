@@ -72,6 +72,7 @@ export const tasks = createTable(
     name: varchar("name", { length: 256 }),
     author: varchar("author", { length: 256 }), // In the future it's gonna be user
     positionInsideColumn: int("positionInsideColumn"),
+    columnId: int("column_id"),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -84,7 +85,7 @@ export const tasks = createTable(
 
 export const tasksRelations = relations(tasks, ({ one }) => ({
   column: one(columns, {
-    fields: [tasks.id],
+    fields: [tasks.columnId],
     references: [columns.id],
   }),
 }));
