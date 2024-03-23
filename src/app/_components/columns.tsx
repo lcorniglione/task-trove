@@ -25,7 +25,7 @@ const Columns = ({ columns }: ColumnsProps) => {
         <Column key={column.id} column={column} />
       ))}
 
-      <EmptyColumn />
+      <EmptyColumn isEmptyBoard={cols.length === 0} />
     </ol>
   );
 };

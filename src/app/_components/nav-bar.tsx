@@ -1,9 +1,10 @@
 import { ModeToggle } from "@/ui/mode-toggle";
+import { TypographyH3 } from "@/ui/typography";
 
 const NavBar = () => {
   return (
-    <div className="flex h-16 items-center justify-around">
-      <h1>TaskTrove</h1>
+    <div className="container flex items-center justify-between pb-8 pt-8">
+      <TypographyH3>TaskTrove</TypographyH3>
       <ModeToggle />
     </div>
   );

@@ -1,5 +1,6 @@
 "use client";
 
+import { columnFormSchema } from "@/lib/types";
 import { type ColumnWithTasks } from "@/server/db/types";
 import { api } from "@/trpc/react";
 import { Button } from "@/ui/button";
@@ -8,26 +9,30 @@ import { Input } from "@/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { X } from "lucide-react";
 import { useParams } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-const formSchema = z.object({
-  columnName: z.string().min(2).max(50),
-});
+interface EmptyColumnProps {
+  isEmptyBoard: boolean;
+}
 
-const EmptyColumn = () => {
+const EmptyColumn = ({ isEmptyBoard }: EmptyColumnProps) => {
   const params = useParams<{ id: string }>();
-  const [addingColumn, setAddingColumn] = useState(false);
+  const [addingColumn, setAddingColumn] = useState(isEmptyBoard);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof columnFormSchema>>({
+    resolver: zodResolver(columnFormSchema),
     defaultValues: {
       columnName: "",
     },
   });
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
 
   const ctx = api.useUtils();
   const { mutate: createColumn } = api.column.create.useMutation({
@@ -71,7 +76,7 @@ const EmptyColumn = () => {
     setAddingColumn(false);
   };
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = (values: z.infer<typeof columnFormSchema>) => {
     createColumn({ name: values.columnName, projectId: parseInt(params.id) });
   };
 

@@ -1,3 +1,4 @@
+import { projectFormSchema } from "@/lib/types";
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import { projects } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
@@ -21,5 +22,11 @@ export const projectRouter = createTRPCRouter({
         where: eq(projects.id, parseInt(id)),
         with: { columns: { with: { tasks: true } } },
       });
+    }),
+
+  create: publicProcedure
+    .input(projectFormSchema)
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.insert(projects).values(input);
     }),
 });
