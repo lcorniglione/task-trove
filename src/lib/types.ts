@@ -6,7 +6,7 @@ export const projectFormSchema = z.object({
 });
 
 export const columnFormSchema = z.object({
-  columnName: z.string().min(2).max(50),
+  name: z.string().min(2).max(50),
 });
 
 export const columnCreationSchema = columnFormSchema.extend({
@@ -19,4 +19,5 @@ export const taskFormSchema = z.object({
 
 export const taskCreationSchema = taskFormSchema.extend({
   columnId: z.number(),
+  positionInsideColumn: z.number(),
 });

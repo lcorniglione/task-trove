@@ -10,6 +10,7 @@ export const taskRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const columnTasks = await ctx.db.query.tasks.findMany({
         where: eq(tasks.columnId, input.columnId),
+        orderBy: tasks.positionInsideColumn,
       });
 
       return columnTasks;
@@ -22,6 +23,11 @@ export const taskRouter = createTRPCRouter({
   create: publicProcedure
     .input(taskCreationSchema)
     .mutation(async ({ ctx, input }) => {
+      /* await new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve();
+        }, 5000);
+      }); */
       return await ctx.db.insert(tasks).values(input);
     }),
 });

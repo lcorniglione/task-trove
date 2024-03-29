@@ -9,17 +9,18 @@ import { Input } from "@/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, X } from "lucide-react";
 import { useParams } from "next/navigation";
-import { forwardRef, useEffect, useRef } from "react";
+import { forwardRef, useEffect, useRef, type RefObject } from "react";
 import { useForm } from "react-hook-form";
 import { type z } from "zod";
 
 interface EmptyTaskProps {
   onCancel: () => void;
   columnId: number;
+  listRef: RefObject<HTMLUListElement>;
 }
 
 const EmptyTask = forwardRef<HTMLLIElement, EmptyTaskProps>(
-  ({ onCancel, columnId }, ref) => {
+  ({ onCancel, columnId, listRef }, ref) => {
     const params = useParams<{ id: string }>();
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -64,48 +65,57 @@ const EmptyTask = forwardRef<HTMLLIElement, EmptyTaskProps>(
       onSettled() {
         void ctx.task.getByColumnId.invalidate({ columnId });
       },
+      onSuccess() {
+        listRef.current?.scroll({
+          top: listRef.current?.scrollHeight,
+          behavior: "smooth",
+        });
+      },
     });
 
     const onSubmit = (values: z.infer<typeof taskFormSchema>) => {
-      createTask({ name: values.name, columnId: parseInt(params.id) });
+      const tasksOnColumn = ctx.task.getByColumnId.getData({ columnId });
+      createTask({
+        name: values.name,
+        columnId,
+        positionInsideColumn: tasksOnColumn?.length ?? 0,
+      });
     };
 
     return (
-      <>
-        <section ref={ref} className="flex flex-col gap-2 p-2">
-          <div className="flex w-full items-center justify-between rounded-lg bg-[#22272B] px-3 py-2 dark:bg-white dark:shadow-task-shadow">
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          ref={inputRef}
-                          placeholder="Enter task title"
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-              </form>
-            </Form>
-          </div>
-        </section>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
+          <section ref={ref} className="flex flex-col gap-2 p-2">
+            <div className="flex w-full items-center justify-between rounded-lg bg-[#22272B] px-3 py-2 dark:bg-white dark:shadow-task-shadow">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormControl>
+                      <Input
+                        {...field}
+                        ref={inputRef}
+                        placeholder="Enter task title"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
+          </section>
 
-        <section className="flex justify-between p-2">
-          <Button variant="ghost">
-            <Plus className="mr-2 h-4 w-4" /> Save Task
-          </Button>
+          <section className="flex justify-between p-2">
+            <Button variant="ghost" type="submit">
+              <Plus className="mr-2 h-4 w-4" /> Save Task
+            </Button>
 
-          <Button variant="ghost" onClick={onCancel}>
-            <X />
-          </Button>
-        </section>
-      </>
+            <Button variant="ghost" onClick={onCancel}>
+              <X />
+            </Button>
+          </section>
+        </form>
+      </Form>
     );
   },
 );

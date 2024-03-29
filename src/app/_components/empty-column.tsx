@@ -26,7 +26,7 @@ const EmptyColumn = ({ isEmptyBoard }: EmptyColumnProps) => {
   const form = useForm<z.infer<typeof columnFormSchema>>({
     resolver: zodResolver(columnFormSchema),
     defaultValues: {
-      columnName: "",
+      name: "",
     },
   });
 
@@ -77,11 +77,11 @@ const EmptyColumn = ({ isEmptyBoard }: EmptyColumnProps) => {
   };
 
   const onSubmit = (values: z.infer<typeof columnFormSchema>) => {
-    createColumn({ name: values.columnName, projectId: parseInt(params.id) });
+    createColumn({ name: values.name, projectId: parseInt(params.id) });
   };
 
   return (
-    <li className="flex h-[100vh] min-w-[350px] flex-col">
+    <li className="flex min-w-[350px] flex-col">
       {!addingColumn ? (
         <button
           className="w-full rounded-lg bg-slate-400 bg-opacity-20 p-4 text-left"
@@ -96,7 +96,7 @@ const EmptyColumn = ({ isEmptyBoard }: EmptyColumnProps) => {
               <section className="p-2">
                 <FormField
                   control={form.control}
-                  name="columnName"
+                  name="name"
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>

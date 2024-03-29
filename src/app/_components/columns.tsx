@@ -20,7 +20,7 @@ const Columns = ({ columns }: ColumnsProps) => {
   );
 
   return (
-    <ol className="flex gap-4 overflow-x-auto p-8">
+    <ol className="flex h-full gap-4 overflow-hidden">
       {cols.map((column) => (
         <Column key={column.id} column={column} />
       ))}

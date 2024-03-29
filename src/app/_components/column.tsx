@@ -8,7 +8,7 @@ import { Button } from "@/ui/button";
 import { TypographySmall } from "@/ui/typography";
 import { useClickAway } from "@uidotdev/usehooks";
 import { Plus } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 const Column = ({ column }: { column: ColumnWithTasks }) => {
   const [addingTask, setAddingTask] = useState(false);
@@ -19,18 +19,19 @@ const Column = ({ column }: { column: ColumnWithTasks }) => {
     { initialData: column.tasks },
   );
 
+  const listRef = useRef(null);
   const ref = useClickAway<HTMLLIElement>(() => {
     setAddingTask(false);
   });
 
   return (
-    <li className="flex h-[100vh] min-w-[350px] flex-col">
-      <div className="w-full rounded-lg bg-black text-white shadow-2xl dark:bg-[#f1f2f4] dark:text-black">
+    <li className="flex h-full min-w-[350px] flex-col">
+      <div className="flex max-h-full w-full flex-col rounded-lg bg-black text-white shadow-2xl dark:bg-[#f1f2f4] dark:text-black">
         <section className="p-2">
           <TypographySmall>{column.name}</TypographySmall>
         </section>
 
-        <ol className="flex flex-col gap-2 p-2">
+        <ol className="flex flex-col gap-2 overflow-y-auto p-2" ref={listRef}>
           {tasks.map((task) => (
             <ColumnTask key={task.id} task={task} />
           ))}
@@ -45,6 +46,7 @@ const Column = ({ column }: { column: ColumnWithTasks }) => {
         ) : (
           <EmptyTask
             ref={ref}
+            listRef={listRef}
             onCancel={() => setAddingTask(false)}
             columnId={column.id}
           />

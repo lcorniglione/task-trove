@@ -71,7 +71,7 @@ export const tasks = createTable(
     id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
     name: varchar("name", { length: 256 }),
     author: varchar("author", { length: 256 }), // In the future it's gonna be user
-    positionInsideColumn: int("positionInsideColumn"),
+    positionInsideColumn: int("positionInsideColumn").notNull(),
     columnId: int("column_id"),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
