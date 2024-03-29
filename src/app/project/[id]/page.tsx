@@ -1,6 +1,6 @@
 import Columns from "@/app/_components/columns";
+import ProjectName from "@/app/_components/project-name";
 import { api } from "@/trpc/server";
-import { TypographyH4 } from "@/ui/typography";
 import { unstable_noStore as noStore } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -21,9 +21,7 @@ export default async function Project({ params }: { params: { id: string } }) {
 
   return (
     <div className="flex min-h-0 flex-grow flex-col gap-6 pt-8">
-      <div className="pl-8">
-        <TypographyH4>{project.name}</TypographyH4>
-      </div>
+      <ProjectName name={project.name} />
       <Columns columns={columns} />
     </div>
   );

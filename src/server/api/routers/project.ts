@@ -11,6 +11,12 @@ export const projectRouter = createTRPCRouter({
     });
   }),
 
+  update: publicProcedure
+    .input(projectFormSchema)
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.update(projects).set(input)
+    }),
+
   geyById: publicProcedure
     .input(
       z.object({
