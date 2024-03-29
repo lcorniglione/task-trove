@@ -20,8 +20,10 @@ export default async function Project({ params }: { params: { id: string } }) {
   if (!columns || !project) return redirect("/");
 
   return (
-    <div className="flex min-h-0 flex-grow flex-col gap-6 p-8">
-      <TypographyH4>{project.name}</TypographyH4>
+    <div className="flex min-h-0 flex-grow flex-col gap-6 pt-8">
+      <div className="pl-8">
+        <TypographyH4>{project.name}</TypographyH4>
+      </div>
       <Columns columns={columns} />
     </div>
   );

@@ -5,6 +5,7 @@ import EmptyColumn from "@/app/_components/empty-column";
 import { type ColumnWithTasks } from "@/server/db/types";
 import { api } from "@/trpc/react";
 import { useParams } from "next/navigation";
+import { useRef } from "react";
 
 interface ColumnsProps {
   columns: ColumnWithTasks[];
@@ -12,6 +13,7 @@ interface ColumnsProps {
 
 const Columns = ({ columns }: ColumnsProps) => {
   const params = useParams<{ id: string }>();
+  const columnListRef = useRef(null);
   const { data: cols } = api.column.getByProjectId.useQuery(
     {
       projectId: params.id,
@@ -20,12 +22,15 @@ const Columns = ({ columns }: ColumnsProps) => {
   );
 
   return (
-    <ol className="flex h-full gap-4 overflow-hidden">
+    <ol
+      className="flex h-full gap-4 overflow-hidden overflow-x-scroll pb-8 pl-8"
+      ref={columnListRef}
+    >
       {cols.map((column) => (
         <Column key={column.id} column={column} />
       ))}
 
-      <EmptyColumn isEmptyBoard={cols.length === 0} />
+      <EmptyColumn isEmptyBoard={cols.length === 0} listRef={columnListRef} />
     </ol>
   );
 };

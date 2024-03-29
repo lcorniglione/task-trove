@@ -9,16 +9,17 @@ import { Input } from "@/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { X } from "lucide-react";
 import { useParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 interface EmptyColumnProps {
   isEmptyBoard: boolean;
+  listRef: RefObject<HTMLUListElement>;
 }
 
-const EmptyColumn = ({ isEmptyBoard }: EmptyColumnProps) => {
+const EmptyColumn = ({ isEmptyBoard, listRef }: EmptyColumnProps) => {
   const params = useParams<{ id: string }>();
   const [addingColumn, setAddingColumn] = useState(isEmptyBoard);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -61,6 +62,12 @@ const EmptyColumn = ({ isEmptyBoard }: EmptyColumnProps) => {
     },
     onSettled() {
       void ctx.column.getByProjectId.invalidate({ projectId: params.id });
+    },
+    onSuccess() {
+      listRef.current?.scroll({
+        left: listRef.current?.scrollWidth,
+        behavior: "smooth",
+      });
     },
   });
 

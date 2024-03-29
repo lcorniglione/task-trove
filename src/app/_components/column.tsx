@@ -31,7 +31,7 @@ const Column = ({ column }: { column: ColumnWithTasks }) => {
           <TypographySmall>{column.name}</TypographySmall>
         </section>
 
-        <ol className="flex flex-col gap-2 overflow-y-auto p-2" ref={listRef}>
+        <ol className="flex flex-col gap-2 overflow-y-auto  p-2" ref={listRef}>
           {tasks.map((task) => (
             <ColumnTask key={task.id} task={task} />
           ))}

@@ -8,7 +8,6 @@ import { Form, FormControl, FormField, FormItem } from "@/ui/form";
 import { Input } from "@/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, X } from "lucide-react";
-import { useParams } from "next/navigation";
 import { forwardRef, useEffect, useRef, type RefObject } from "react";
 import { useForm } from "react-hook-form";
 import { type z } from "zod";
@@ -21,7 +20,6 @@ interface EmptyTaskProps {
 
 const EmptyTask = forwardRef<HTMLLIElement, EmptyTaskProps>(
   ({ onCancel, columnId, listRef }, ref) => {
-    const params = useParams<{ id: string }>();
     const inputRef = useRef<HTMLInputElement>(null);
 
     const form = useForm<z.infer<typeof taskFormSchema>>({
