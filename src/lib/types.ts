@@ -8,3 +8,7 @@ export const projectFormSchema = z.object({
 export const columnFormSchema = z.object({
   columnName: z.string().min(2).max(50),
 });
+
+export const taskFormSchema = z.object({
+  name: z.string().min(2).max(50),
+});

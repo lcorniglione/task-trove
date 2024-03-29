@@ -18,4 +18,9 @@ export const taskRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       return ctx.db.delete(tasks).where(eq(tasks.id, input.id));
     }),
+  create: publicProcedure
+    .input(z.object({ name: z.string(), columnId: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db.insert(tasks).values(input);
+    }),
 });
