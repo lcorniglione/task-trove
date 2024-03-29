@@ -8,6 +8,10 @@ export const projectFormSchema = projectNameFormSchema.extend({
   description: z.string().optional(),
 });
 
+export const projectUpdateFormSchema = projectFormSchema.extend({
+  projectId: z.string(),
+});
+
 export const columnFormSchema = z.object({
   name: z.string().min(2).max(50),
 });

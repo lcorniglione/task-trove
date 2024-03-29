@@ -1,4 +1,4 @@
-import { projectFormSchema } from "@/lib/types";
+import { projectFormSchema, projectUpdateFormSchema } from "@/lib/types";
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import { projects } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
@@ -12,9 +12,12 @@ export const projectRouter = createTRPCRouter({
   }),
 
   update: publicProcedure
-    .input(projectFormSchema)
-    .mutation(async ({ ctx, input }) => {
-      return ctx.db.update(projects).set(input)
+    .input(projectUpdateFormSchema)
+    .mutation(async ({ ctx, input: { projectId, ...rest } }) => {
+      return ctx.db
+        .update(projects)
+        .set(rest)
+        .where(eq(projects.id, parseInt(projectId)));
     }),
 
   geyById: publicProcedure

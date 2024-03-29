@@ -1,6 +1,6 @@
 "use client";
 
-import { projectNameFormSchema } from "@/lib/types";
+import { projectFormSchema } from "@/lib/types";
 import { api } from "@/trpc/react";
 import { Button } from "@/ui/button";
 import { Form, FormControl, FormField, FormItem } from "@/ui/form";
@@ -8,7 +8,7 @@ import { Input } from "@/ui/input";
 import { TypographyH4 } from "@/ui/typography";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useClickAway } from "@uidotdev/usehooks";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { useForm } from "react-hook-form";
@@ -21,10 +21,11 @@ interface ProjectNameProps {
 const ProjectName = ({ name }: ProjectNameProps) => {
   const [editingName, setEditionName] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { id } = useParams<{ id: string }>();
   const router = useRouter();
 
-  const form = useForm<z.infer<typeof projectNameFormSchema>>({
-    resolver: zodResolver(projectNameFormSchema),
+  const form = useForm<z.infer<typeof projectFormSchema>>({
+    resolver: zodResolver(projectFormSchema),
     defaultValues: {
       name: name,
     },
@@ -50,8 +51,8 @@ const ProjectName = ({ name }: ProjectNameProps) => {
     inputRef.current?.select();
   };
 
-  const onSubmit = (values: z.infer<typeof projectNameFormSchema>) => {
-    updateProject(values);
+  const onSubmit = (values: z.infer<typeof projectFormSchema>) => {
+    updateProject({ ...values, projectId: id });
   };
 
   const ref = useClickAway<HTMLDivElement>(() => {
