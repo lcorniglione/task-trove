@@ -1,7 +1,7 @@
 "use client";
 
 import { taskFormSchema } from "@/lib/types";
-import { Task } from "@/server/db/types";
+import { type Task } from "@/server/db/types";
 import { api } from "@/trpc/react";
 import { Button } from "@/ui/button";
 import { Form, FormControl, FormField, FormItem } from "@/ui/form";
@@ -11,7 +11,7 @@ import { Plus, X } from "lucide-react";
 import { useParams } from "next/navigation";
 import { forwardRef, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { type z } from "zod";
 
 interface EmptyTaskProps {
   onCancel: () => void;

@@ -1,3 +1,4 @@
+import { columnCreationSchema } from "@/lib/types";
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import { columns } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
@@ -15,12 +16,7 @@ export const columnRouter = createTRPCRouter({
       return projectColumns;
     }),
   create: publicProcedure
-    .input(
-      z.object({
-        name: z.string(),
-        projectId: z.number(),
-      }),
-    )
+    .input(columnCreationSchema)
     .mutation(async ({ ctx, input }) => {
       const columnTable = await ctx.db.insert(columns).values(input);
 
