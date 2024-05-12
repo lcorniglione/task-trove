@@ -22,8 +22,8 @@ const NewProjectForm = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const { mutate: createProject, isLoading } = api.project.create.useMutation({
-    onSuccess: (data) => {
-      router.push(`/project/${data.insertId}`);
+    onSuccess: ([data]) => {
+      router.push(`/project/${data?.insertedId}`);
     },
   });
   const form = useForm<z.infer<typeof projectFormSchema>>({

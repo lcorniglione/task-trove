@@ -18,8 +18,11 @@ export const columnRouter = createTRPCRouter({
   create: publicProcedure
     .input(columnCreationSchema)
     .mutation(async ({ ctx, input }) => {
-      const columnTable = await ctx.db.insert(columns).values(input);
+      const insertedObj = await ctx.db
+        .insert(columns)
+        .values(input)
+        .returning();
 
-      return columnTable.insertId;
+      return insertedObj;
     }),
 });

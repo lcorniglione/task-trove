@@ -36,6 +36,9 @@ export const projectRouter = createTRPCRouter({
   create: publicProcedure
     .input(projectFormSchema)
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.insert(projects).values(input);
+      return ctx.db
+        .insert(projects)
+        .values(input)
+        .returning({ insertedId: projects.id });
     }),
 });

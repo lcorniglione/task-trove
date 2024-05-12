@@ -3,13 +3,13 @@
 
 import { relations, sql } from "drizzle-orm";
 import {
-  bigint,
   index,
-  int,
-  mysqlTableCreator,
+  integer,
+  pgTableCreator,
+  serial,
   timestamp,
   varchar,
-} from "drizzle-orm/mysql-core";
+} from "drizzle-orm/pg-core";
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -17,21 +17,21 @@ import {
  *
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
-export const createTable = mysqlTableCreator((name) => `task-trove_${name}`);
+export const createTable = pgTableCreator((name) => `task-trove_${name}`);
 
 export const projects = createTable(
   "project",
   {
-    id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
+    id: serial("id").primaryKey(),
     name: varchar("name", { length: 256 }).notNull(),
     description: varchar("description", { length: 256 }),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
-    updatedAt: timestamp("updatedAt").onUpdateNow(),
+    updatedAt: timestamp("updatedAt").$onUpdate(() => new Date()),
   },
   (example) => ({
-    nameIndex: index("name_idx").on(example.name),
+    nameIndex: index("project_name_idx").on(example.name),
   }),
 );
 
@@ -42,17 +42,17 @@ export const projectsRelations = relations(projects, ({ many }) => ({
 export const columns = createTable(
   "column",
   {
-    id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
+    id: serial("id").primaryKey(),
     name: varchar("name", { length: 256 }),
-    positionInsideProject: int("positionInsideProject"),
-    projectId: int("project_id"),
+    positionInsideProject: integer("positionInsideProject"),
+    projectId: integer("project_id"),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
-    updatedAt: timestamp("updatedAt").onUpdateNow(),
+    updatedAt: timestamp("updatedAt").$onUpdate(() => new Date()),
   },
   (example) => ({
-    nameIndex: index("name_idx").on(example.name),
+    nameIndex: index("column_name_idx").on(example.name),
   }),
 );
 
@@ -68,18 +68,18 @@ export const columnsRelations = relations(columns, ({ one, many }) => ({
 export const tasks = createTable(
   "task",
   {
-    id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
+    id: serial("id").primaryKey(),
     name: varchar("name", { length: 256 }),
     author: varchar("author", { length: 256 }), // In the future it's gonna be user
-    positionInsideColumn: int("positionInsideColumn").notNull(),
-    columnId: int("column_id"),
+    positionInsideColumn: integer("positionInsideColumn").notNull(),
+    columnId: integer("column_id"),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
-    updatedAt: timestamp("updatedAt").onUpdateNow(),
+    updatedAt: timestamp("updatedAt").$onUpdate(() => new Date()),
   },
   (example) => ({
-    nameIndex: index("name_idx").on(example.name),
+    nameIndex: index("task_name_idx").on(example.name),
   }),
 );
 
