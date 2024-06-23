@@ -3,6 +3,7 @@
 
 import { relations, sql } from "drizzle-orm";
 import {
+  doublePrecision,
   index,
   integer,
   pgTableCreator,
@@ -44,7 +45,6 @@ export const columns = createTable(
   {
     id: serial("id").primaryKey(),
     name: varchar("name", { length: 256 }),
-    positionInsideProject: integer("positionInsideProject"),
     projectId: integer("project_id"),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
@@ -70,9 +70,9 @@ export const tasks = createTable(
   {
     id: serial("id").primaryKey(),
     name: varchar("name", { length: 256 }),
-    author: varchar("author", { length: 256 }), // In the future it's gonna be user
-    positionInsideColumn: integer("positionInsideColumn").notNull(),
-    columnId: integer("column_id"),
+    author: varchar("author", { length: 256 }).notNull().default("me"), // In the future it's gonna be user
+    positionInsideColumn: doublePrecision("positionInsideColumn").notNull(),
+    columnId: integer("column_id").notNull(),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),

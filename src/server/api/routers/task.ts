@@ -1,4 +1,4 @@
-import { taskCreationSchema } from "@/lib/types";
+import { taskCreationSchema, taskUpdateSchema } from "@/lib/types";
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import { tasks } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
@@ -23,11 +23,14 @@ export const taskRouter = createTRPCRouter({
   create: publicProcedure
     .input(taskCreationSchema)
     .mutation(async ({ ctx, input }) => {
-      /* await new Promise((resolve, reject) => {
-        setTimeout(() => {
-          resolve();
-        }, 5000);
-      }); */
       return await ctx.db.insert(tasks).values(input);
+    }),
+  update: publicProcedure
+    .input(taskUpdateSchema)
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db
+        .update(tasks)
+        .set(input)
+        .where(eq(tasks.id, input.id));
     }),
 });

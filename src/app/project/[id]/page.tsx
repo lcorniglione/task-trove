@@ -1,14 +1,12 @@
+import Column from "@/app/_components/column";
+import ColumnTask from "@/app/_components/column-task";
 import Columns from "@/app/_components/columns";
 import ProjectName from "@/app/_components/project-name";
 import { api } from "@/trpc/server";
-import { unstable_noStore as noStore } from "next/cache";
 import { redirect } from "next/navigation";
-
-export const dynamic = "force-dynamic";
+import { Suspense } from "react";
 
 export default async function Project({ params }: { params: { id: string } }) {
-  noStore();
-
   const project = await api.project.geyById.query({
     id: params.id,
   });
@@ -21,8 +19,10 @@ export default async function Project({ params }: { params: { id: string } }) {
 
   return (
     <div className="flex min-h-0 flex-grow flex-col gap-6 pt-8">
-      <ProjectName name={project.name} />
-      <Columns columns={columns} />
+      <Suspense fallback={<div>Loading...</div>}>
+        <ProjectName name={project.name} />
+        <Columns columns={columns} />
+      </Suspense>
     </div>
   );
 }

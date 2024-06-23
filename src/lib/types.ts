@@ -28,3 +28,10 @@ export const taskCreationSchema = taskFormSchema.extend({
   columnId: z.number(),
   positionInsideColumn: z.number(),
 });
+
+export const taskUpdateSchema = z.object({
+  id: z.number(),
+  positionInsideColumn: z.number().optional(),
+  columnId: z.number().optional(),
+  prevColumnId: z.number().optional(),
+});

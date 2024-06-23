@@ -1,19 +1,15 @@
 import "server-only";
 
-import {
-  createTRPCProxyClient,
-  loggerLink,
-  TRPCClientError,
-} from "@trpc/client";
-import { callProcedure } from "@trpc/server";
+import { createTRPCClient, loggerLink, TRPCClientError } from "@trpc/client";
 import { observable } from "@trpc/server/observable";
 import { type TRPCErrorResponse } from "@trpc/server/rpc";
 import { headers } from "next/headers";
 import { cache } from "react";
 
 import { appRouter, type AppRouter } from "@/server/api/root";
-import { createTRPCContext } from "@/server/api/trpc";
-import { transformer } from "./shared";
+import { createCallerFactory, createTRPCContext } from "@/server/api/trpc";
+
+const createCaller = createCallerFactory(appRouter);
 
 /**
  * This wraps the `createTRPCContext` helper and provides the required context for the tRPC API when
@@ -28,8 +24,7 @@ const createContext = cache(() => {
   });
 });
 
-export const api = createTRPCProxyClient<AppRouter>({
-  transformer,
+export const api = createTRPCClient<AppRouter>({
   links: [
     loggerLink({
       enabled: (op) =>
@@ -45,19 +40,17 @@ export const api = createTRPCProxyClient<AppRouter>({
         observable((observer) => {
           createContext()
             .then((ctx) => {
-              return callProcedure({
-                procedures: appRouter._def.procedures,
-                path: op.path,
-                rawInput: op.input,
-                ctx,
-                type: op.type,
-              });
+              const caller = createCaller(ctx);
+              // TODO: Check the following in the future. Dirty workaround
+              // @ts-ignore
+              return caller[op.path](op.input);
             })
             .then((data) => {
               observer.next({ result: { data } });
               observer.complete();
             })
             .catch((cause: TRPCErrorResponse) => {
+              console.log(cause);
               observer.error(TRPCClientError.from(cause));
             });
         }),
