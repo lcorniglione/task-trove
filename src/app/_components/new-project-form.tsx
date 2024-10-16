@@ -21,11 +21,14 @@ import { z } from "zod";
 const NewProjectForm = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
-  const { mutate: createProject, isLoading } = api.project.create.useMutation({
+  const utils = api.useUtils();
+  const { mutate: createProject, isPending } = api.project.create.useMutation({
     onSuccess: ([data]) => {
+      void utils.project.invalidate();
       router.push(`/project/${data?.insertedId}`);
     },
   });
+
   const form = useForm<z.infer<typeof projectFormSchema>>({
     resolver: zodResolver(projectFormSchema),
     defaultValues: {
@@ -85,9 +88,9 @@ const NewProjectForm = () => {
             variant="default"
             size="sm"
             type="submit"
-            disabled={isLoading}
+            disabled={isPending}
           >
-            {isLoading ? "Loading..." : "Create"}
+            {isPending ? "Loading..." : "Create"}
           </Button>
         </div>
       </form>

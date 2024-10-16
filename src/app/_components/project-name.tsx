@@ -61,7 +61,7 @@ const ProjectName = ({ name }: ProjectNameProps) => {
 
   if (editingName) {
     return (
-      <div className="ml-8 self-start" ref={ref}>
+      <div className="self-start pb-6" ref={ref}>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
@@ -86,9 +86,11 @@ const ProjectName = ({ name }: ProjectNameProps) => {
   }
 
   return (
-    <Button variant="ghost" className="ml-8 self-start" onClick={editName}>
-      <TypographyH4>{name}</TypographyH4>
-    </Button>
+    <div className="pb-6">
+      <Button variant="ghost" className="self-start" onClick={editName}>
+        <TypographyH4>{name}</TypographyH4>
+      </Button>
+    </div>
   );
 };
 

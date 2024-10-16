@@ -1,4 +1,4 @@
-import NavBar from "@/app/_components/nav-bar";
+import SideBar from "@/app/_components/ui/side-bar";
 import { ThemeProvider } from "@/app/_components/theme-provider";
 import "@/styles/globals.css";
 import { TRPCReactProvider } from "@/trpc/react";
@@ -30,8 +30,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <TRPCReactProvider>
-            <NavBar />
-            {children}
+            <SideBar>{children}</SideBar>
           </TRPCReactProvider>
         </ThemeProvider>
       </body>

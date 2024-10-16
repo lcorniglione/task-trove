@@ -20,10 +20,10 @@ const Columns = ({ columns }: ColumnsProps) => {
     },
     { initialData: columns },
   );
-  console.log("se llama");
+
   return (
     <ol
-      className="flex h-full gap-4 overflow-hidden overflow-x-scroll pb-8 pl-8 pt-8"
+      className="flex h-full gap-4 overflow-hidden overflow-x-scroll"
       ref={columnListRef}
     >
       {cols.map((column) => (

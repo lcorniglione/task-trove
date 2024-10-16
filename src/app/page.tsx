@@ -12,8 +12,8 @@ export default async function Home() {
   const projects = await api.project.getAll.query();
 
   return (
-    <main className="container flex min-h-screen flex-col ">
-      <div className="pb-6 pt-6">
+    <div className="flex min-h-screen flex-col">
+      <div className="pb-6">
         <Link href="project/new">
           <Button>New Board</Button>
         </Link>
@@ -21,7 +21,7 @@ export default async function Home() {
       <div className="flex flex-wrap gap-4">
         {projects.map((project) => (
           <Link key={project.id} href={`project/${project.id}`} prefetch={true}>
-            <Card className=" w-[350px]">
+            <Card className="w-[350px]">
               <CardHeader>
                 <CardTitle>{project.name}</CardTitle>
                 <CardDescription>{project.description}</CardDescription>
@@ -30,6 +30,6 @@ export default async function Home() {
           </Link>
         ))}
       </div>
-    </main>
+    </div>
   );
 }
