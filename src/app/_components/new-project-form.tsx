@@ -11,6 +11,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/ui/form";
+import { IconPicker } from "@/ui/icon-picker";
+import IconPicker2 from "@/ui/icon-picker2";
 import { Input } from "@/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -77,6 +79,22 @@ const NewProjectForm = () => {
               <FormLabel>Description</FormLabel>
               <FormControl>
                 <Input {...field} placeholder="Enter project description" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem className="w-full">
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <div className="w-full">
+                  <IconPicker2 />
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
