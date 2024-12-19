@@ -1,4 +1,3 @@
-import useDebounce from "@/app/hooks/useDebounce";
 import {
   Dialog,
   DialogContent,
@@ -9,6 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { Input } from "@/ui/input";
+import { useDebounce } from "@uidotdev/usehooks";
 import * as LucideIcons from "lucide-react";
 import { ReactNode, useMemo, useState } from "react";
 
