@@ -11,8 +11,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/ui/form";
-import { IconPicker } from "@/ui/icon-picker";
-import IconPicker2 from "@/ui/icon-picker2";
+import IconPicker from "@/ui/icon-picker";
 import { Input } from "@/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -93,7 +92,7 @@ const NewProjectForm = () => {
               <FormLabel>Description</FormLabel>
               <FormControl>
                 <div className="w-full">
-                  <IconPicker2 />
+                  <IconPicker />
                 </div>
               </FormControl>
               <FormMessage />
