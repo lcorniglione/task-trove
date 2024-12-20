@@ -92,7 +92,7 @@ const NewProjectForm = () => {
               <FormLabel>Description</FormLabel>
               <FormControl>
                 <div className="w-full">
-                  <IconPicker />
+                  <IconPicker {...field} />
                 </div>
               </FormControl>
               <FormMessage />

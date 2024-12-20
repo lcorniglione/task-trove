@@ -7,79 +7,87 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
+import { DialogClose } from "@/ui/dialog";
 import { Input } from "@/ui/input";
+import { useVirtualizer } from "@tanstack/react-virtual";
 import { useDebounce } from "@uidotdev/usehooks";
 import * as LucideIcons from "lucide-react";
-import { ReactNode, useMemo, useState } from "react";
+import { CSSProperties, ReactNode, useMemo, useState } from "react";
 
 const ChevronsUpDown = LucideIcons.ChevronsUpDown;
+const ITEM_SIZE = 40; // Size of each icon button
+const CONTAINER_WIDTH = 445; // Approximate width of the container
+const ITEMS_PER_ROW = Math.floor(CONTAINER_WIDTH / ITEM_SIZE);
 
-const iconsToBePicked = Object.entries(LucideIcons)
-  .filter(([name]) => {
-    // Filter out the default export and helper functions
-    return (
-      name !== "default" && name !== "icons" && name !== "createLucideIcon"
-    );
-  })
-  .map(([name]) => {
-    return {
-      value: name,
-      lowerCaseValue: name.toLowerCase(),
-      label: name
-        .replace(/([A-Z])/g, "-$1")
-        .toLowerCase()
-        .replace(/^-/, ""),
-    };
-  });
+const iconsToBePicked = Object.entries(LucideIcons.icons).map(([name]) => {
+  return {
+    value: name,
+  };
+});
 
 const DialogIcon = ({
   children,
   onClick,
   isSelected,
+  style,
 }: {
   children: ReactNode;
   onClick: () => void;
   isSelected: boolean;
+  style?: CSSProperties;
 }) => {
   return (
-    <button
+    <span
       onClick={onClick}
+      style={style}
       className={cn(
-        "flex h-10 w-10 items-center justify-center rounded-md border border-input bg-background p-2 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
-        isSelected && "bg-accent text-accent-foreground ring-2 ring-ring",
+        "flex items-center justify-center rounded-md border border-input bg-background p-2 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+        isSelected && "border-2 border-ring bg-accent text-accent-foreground",
       )}
     >
       {children}
-    </button>
+    </span>
   );
 };
 
-const IconPicker = () => {
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("");
+const IconPicker = ({
+  onChange,
+  value,
+}: {
+  onChange: (value: string) => void;
+  value?: string;
+}) => {
   const [search, setSearch] = useState("");
+  const [parentRef, setParentRef] = useState<HTMLDivElement | null>(null);
 
   const debouncedSearch = useDebounce(search, 300);
 
   const filteredIcons = useMemo(
     () =>
       iconsToBePicked.filter((icon) =>
-        icon.lowerCaseValue.includes(debouncedSearch),
+        icon.value.toLowerCase().includes(debouncedSearch.toLowerCase()),
       ),
     [debouncedSearch],
   );
+
+  const rowVirtualizer = useVirtualizer({
+    count: filteredIcons.length,
+    getScrollElement: () => parentRef,
+    estimateSize: () => ITEM_SIZE,
+    overscan: 50,
+    lanes: ITEMS_PER_ROW,
+  });
 
   return (
     <Dialog>
       <DialogTrigger
         role="combobox"
-        aria-expanded={open}
-        className="inline-flex h-10 w-[200px] items-center justify-center whitespace-nowrap rounded-md border border-input bg-background px-4 py-2 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+        className="inline-flex h-10 w-[200px] items-center justify-between whitespace-nowrap rounded-md border border-input bg-background px-4 py-2 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
       >
-        {value
-          ? iconsToBePicked.find((framework) => framework.value === value)
-              ?.label
-          : "Select Icon..."}
+        <span className="overflow-hidden text-ellipsis">
+          {value ? value : "Select Icon..."}
+        </span>
+
         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
       </DialogTrigger>
       <DialogContent>
@@ -94,30 +102,57 @@ const IconPicker = () => {
           <div className="grid flex-1 gap-2">
             <Input
               placeholder="Enter icon name"
-              onChange={(e) => setSearch(e.target.value.toLowerCase())}
+              onChange={(e) => setSearch(e.target.value)}
               value={search}
             />
           </div>
         </div>
 
-        <div className="grid h-72 w-[100%] grid-cols-[repeat(auto-fill,minmax(64px,1fr))] place-items-center gap-4 overflow-hidden overflow-y-scroll rounded-md border bg-zinc-900 p-2">
-          {filteredIcons.map((icon) => {
-            const Icon =
-              LucideIcons.icons[icon.value as keyof typeof LucideIcons.icons];
+        <div
+          ref={setParentRef}
+          className="h-72 overflow-y-auto rounded-md border bg-zinc-900"
+        >
+          <div
+            style={{
+              height: `${rowVirtualizer.getTotalSize()}px`,
+            }}
+            className="relative w-full"
+          >
+            {rowVirtualizer.getVirtualItems().map((virtualItem) => {
+              const icon = filteredIcons[virtualItem.index];
 
-            if (!Icon) return null;
+              if (!icon) return null;
 
-            const isSelected = value === icon.value;
-            return (
-              <DialogIcon
-                key={icon.value}
-                isSelected={isSelected}
-                onClick={() => setValue(icon.value)}
-              >
-                <Icon />
-              </DialogIcon>
-            );
-          })}
+              const Icon =
+                LucideIcons.icons[icon.value as keyof typeof LucideIcons.icons];
+
+              if (!Icon) return null;
+
+              const isSelected = value === icon.value;
+
+              const row = Math.floor(virtualItem.index / ITEMS_PER_ROW);
+              const column = virtualItem.index % ITEMS_PER_ROW;
+
+              return (
+                <DialogClose key={icon.value}>
+                  <DialogIcon
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      width: `${ITEM_SIZE}px`,
+                      height: `${ITEM_SIZE}px`,
+                      transform: `translateY(${row * ITEM_SIZE}px) translateX(${column * ITEM_SIZE}px)`,
+                    }}
+                    isSelected={isSelected}
+                    onClick={() => onChange(icon.value)}
+                  >
+                    <Icon />
+                  </DialogIcon>
+                </DialogClose>
+              );
+            })}
+          </div>
         </div>
       </DialogContent>
     </Dialog>
