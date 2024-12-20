@@ -1,5 +1,6 @@
-import SideBar from "@/app/_components/ui/side-bar";
 import { ThemeProvider } from "@/app/_components/theme-provider";
+import SideBar from "@/app/_components/ui/side-bar";
+import { Toaster } from "@/app/_components/ui/sonner";
 import "@/styles/globals.css";
 import { TRPCReactProvider } from "@/trpc/react";
 import { Inter } from "next/font/google";
@@ -31,6 +32,7 @@ export default function RootLayout({
         >
           <TRPCReactProvider>
             <SideBar>{children}</SideBar>
+            <Toaster />
           </TRPCReactProvider>
         </ThemeProvider>
       </body>

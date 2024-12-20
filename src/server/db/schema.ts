@@ -26,6 +26,7 @@ export const projects = createTable(
     id: serial("id").primaryKey(),
     name: varchar("name", { length: 256 }).notNull(),
     description: varchar("description", { length: 256 }),
+    icon: varchar("icon", { length: 256 }),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),

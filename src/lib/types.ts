@@ -1,3 +1,4 @@
+import * as LucideIcons from "lucide-react";
 import { z } from "zod";
 
 export const projectNameFormSchema = z.object({
@@ -6,6 +7,18 @@ export const projectNameFormSchema = z.object({
 
 export const projectFormSchema = projectNameFormSchema.extend({
   description: z.string().optional(),
+  icon: z
+    .string()
+    .optional()
+    .refine(
+      (value) => {
+        const icon = LucideIcons.icons[value as keyof typeof LucideIcons.icons];
+        return !!icon;
+      },
+      {
+        message: "Invalid icon",
+      },
+    ),
 });
 
 export const projectUpdateFormSchema = projectFormSchema.extend({

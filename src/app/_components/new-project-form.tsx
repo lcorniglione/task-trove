@@ -1,6 +1,7 @@
 "use client";
 
 import { projectFormSchema } from "@/lib/types";
+import { isTRPCClientError } from "@/trpc/helpers";
 import { api } from "@/trpc/react";
 import { Button } from "@/ui/button";
 import {
@@ -17,6 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 const NewProjectForm = () => {
@@ -28,6 +30,17 @@ const NewProjectForm = () => {
       void utils.project.invalidate();
       router.push(`/project/${data?.insertedId}`);
     },
+    onError: (error) => {
+      if (isTRPCClientError(error)) {
+        toast.error(
+          `Something went wrong: ${error.data?.httpStatus}: ${JSON.stringify(
+            error.data?.zodError?.fieldErrors,
+          )}`,
+        );
+      } else {
+        toast.error(`Something went wrong: ${error.message}`);
+      }
+    },
   });
 
   const form = useForm<z.infer<typeof projectFormSchema>>({
@@ -35,6 +48,7 @@ const NewProjectForm = () => {
     defaultValues: {
       name: "",
       description: "",
+      icon: "",
     },
   });
 
@@ -86,7 +100,7 @@ const NewProjectForm = () => {
 
         <FormField
           control={form.control}
-          name="description"
+          name="icon"
           render={({ field }) => (
             <FormItem className="w-full">
               <FormLabel>Description</FormLabel>
