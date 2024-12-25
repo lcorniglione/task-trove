@@ -1,5 +1,3 @@
-import Column from "@/app/_components/column";
-import ColumnTask from "@/app/_components/column-task";
 import Columns from "@/app/_components/columns";
 import ProjectName from "@/app/_components/project-name";
 import { api } from "@/trpc/server";
