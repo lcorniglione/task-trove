@@ -4,7 +4,8 @@ import { api } from "@/trpc/server";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
-export default async function Project({ params }: { params: { id: string } }) {
+export default async function Project(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const project = await api.project.geyById.query({
     id: params.id,
   });
