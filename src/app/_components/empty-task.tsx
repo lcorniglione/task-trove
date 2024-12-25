@@ -84,7 +84,7 @@ const EmptyTask = forwardRef<HTMLLIElement, EmptyTaskProps>(
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
           <section ref={ref} className="flex flex-col gap-2 p-2">
-            <div className="flex w-full items-center justify-between rounded-lg bg-[#22272B] px-3 py-2 dark:bg-white dark:shadow-task-shadow">
+            <div className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-secondary-foreground">
               <FormField
                 control={form.control}
                 name="name"

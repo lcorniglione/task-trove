@@ -5,8 +5,8 @@ import { api } from "@/trpc/react";
 import { Button } from "@/ui/button";
 import { TypographyPSmall } from "@/ui/typography";
 import { Trash } from "lucide-react";
-import { useState } from "react";
 import type { DragEvent } from "react";
+import { useState } from "react";
 
 const ColumnTask = ({ task }: { task: Task }) => {
   const [dropLocation, setDropLocation] = useState<"top" | "bottom" | null>(
@@ -159,7 +159,7 @@ const ColumnTask = ({ task }: { task: Task }) => {
     >
       <div
         draggable={true}
-        className="flex w-full cursor-pointer items-center justify-between rounded-lg bg-[#22272B] px-3 py-2 dark:bg-white dark:shadow-task-shadow"
+        className="flex w-full cursor-pointer items-center justify-between rounded-lg bg-[#22272B] px-3 py-2 text-white"
       >
         <TypographyPSmall>{task.name}</TypographyPSmall>
 

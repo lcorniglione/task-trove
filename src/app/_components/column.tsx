@@ -9,8 +9,8 @@ import { Button } from "@/ui/button";
 import { TypographySmall } from "@/ui/typography";
 import { useClickAway } from "@uidotdev/usehooks";
 import { Plus } from "lucide-react";
-import { useRef, useState } from "react";
 import type { DragEvent } from "react";
+import { useRef, useState } from "react";
 import z from "zod";
 
 const optimisticColumnMutation = async (
@@ -139,7 +139,7 @@ const Column = ({ column }: { column: ColumnWithTasks }) => {
   return (
     <li className="flex h-full min-w-[350px] flex-col">
       <div
-        className={`flex max-h-full w-full flex-col rounded-lg bg-black text-white shadow-2xl dark:bg-[#f1f2f4] dark:text-black ${acceptDrop ? "outline outline-2 outline-[#f44250]" : ""}`}
+        className={`flex max-h-full w-full flex-col rounded-lg bg-secondary-foreground text-secondary ${acceptDrop ? "outline outline-2 outline-[#f44250]" : ""}`}
       >
         <section className="p-2">
           <TypographySmall>{column.name}</TypographySmall>

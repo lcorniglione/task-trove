@@ -49,7 +49,6 @@ const EmptyColumn = ({ isEmptyBoard, listRef }: EmptyColumnProps) => {
         id: Math.random(),
         tasks: [],
         createdAt: new Date(),
-        positionInsideProject: 1,
         updatedAt: null,
       };
 
@@ -97,7 +96,7 @@ const EmptyColumn = ({ isEmptyBoard, listRef }: EmptyColumnProps) => {
           + Add new column
         </button>
       ) : (
-        <div className="w-full rounded-lg bg-black text-white  dark:bg-[#f1f2f4] dark:text-black">
+        <div className="w-full rounded-lg bg-secondary-foreground">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <section className="p-2">
@@ -118,13 +117,13 @@ const EmptyColumn = ({ isEmptyBoard, listRef }: EmptyColumnProps) => {
                 />
               </section>
 
-              <section className="flex p-4 align-middle">
+              <section className="flex justify-between p-4 align-middle">
                 <Button variant="default" size="sm" type="submit">
                   Apply
                 </Button>
 
                 <Button
-                  variant="ghost"
+                  variant="link"
                   size="sm"
                   onClick={handleCancelAddColumnClick}
                 >
