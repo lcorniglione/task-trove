@@ -18,7 +18,7 @@ interface EmptyTaskProps {
   listRef: RefObject<HTMLUListElement>;
 }
 
-const EmptyTask = forwardRef<HTMLLIElement, EmptyTaskProps>(
+const EmptyTask = forwardRef<HTMLFormElement, EmptyTaskProps>(
   ({ onCancel, columnId, listRef }, ref) => {
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -82,8 +82,12 @@ const EmptyTask = forwardRef<HTMLLIElement, EmptyTaskProps>(
 
     return (
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
-          <section ref={ref} className="flex flex-col gap-2 p-2">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="w-full"
+          ref={ref}
+        >
+          <section className="flex flex-col gap-2 p-2">
             <div className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-secondary-foreground">
               <FormField
                 control={form.control}

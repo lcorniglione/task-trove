@@ -81,7 +81,7 @@ const Column = ({ column }: { column: ColumnWithTasks }) => {
   );
 
   const listRef = useRef(null);
-  const ref = useClickAway<HTMLLIElement>(() => {
+  const ref = useClickAway<HTMLFormElement>(() => {
     setAddingTask(false);
   });
 
