@@ -1,14 +1,9 @@
 import { api } from "@/trpc/server";
 import { Button } from "@/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/ui/card";
-import { unstable_noStore as noStore } from "next/cache";
 import Link from "next/link";
 
-export const dynamic = "force-dynamic";
-
 export default async function Home() {
-  noStore();
-
   const projects = await api.project.getAll.query();
 
   return (
