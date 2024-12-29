@@ -7,6 +7,7 @@ import { z } from "zod";
 export const projectRouter = createTRPCRouter({
   getAll: protectedProcedure.query(async ({ ctx }) => {
     return ctx.db.query.projects.findMany({
+      where: eq(projects.owner, ctx.auth.userId),
       orderBy: (posts, { desc }) => [desc(posts.createdAt)],
     });
   }),
@@ -38,7 +39,7 @@ export const projectRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       return ctx.db
         .insert(projects)
-        .values(input)
+        .values({ ...input, owner: ctx.auth.userId })
         .returning({ insertedId: projects.id });
     }),
 });

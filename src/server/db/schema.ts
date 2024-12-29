@@ -27,6 +27,7 @@ export const projects = createTable(
     name: varchar("name", { length: 256 }).notNull(),
     description: varchar("description", { length: 256 }),
     icon: varchar("icon", { length: 256 }),
+    owner: varchar("owner_id", { length: 256 }).notNull(), // coming from clerk
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -71,7 +72,6 @@ export const tasks = createTable(
   {
     id: serial("id").primaryKey(),
     name: varchar("name", { length: 256 }),
-    author: varchar("author", { length: 256 }).notNull().default("me"), // In the future it's gonna be user
     positionInsideColumn: doublePrecision("positionInsideColumn").notNull(),
     columnId: integer("column_id").notNull(),
     createdAt: timestamp("created_at")

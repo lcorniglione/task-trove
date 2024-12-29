@@ -1,11 +1,3 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { DialogClose } from "@/ui/dialog";
 import { Input } from "@/ui/input";
@@ -13,6 +5,14 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 import { useDebounce } from "@uidotdev/usehooks";
 import * as LucideIcons from "lucide-react";
 import { CSSProperties, ReactNode, useMemo, useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./dialog";
 
 const ChevronsUpDown = LucideIcons.ChevronsUpDown;
 const ITEM_SIZE = 40; // Size of each icon button
