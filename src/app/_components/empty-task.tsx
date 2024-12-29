@@ -50,7 +50,6 @@ const EmptyTask = forwardRef<HTMLFormElement, EmptyTaskProps>(
           createdAt: new Date(),
           positionInsideColumn: prevData.length,
           updatedAt: null,
-          author: "me",
         };
 
         ctx.task.getByColumnId.setData({ columnId }, (old) => [
