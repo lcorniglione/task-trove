@@ -1,11 +1,11 @@
 import { taskCreationSchema, taskUpdateSchema } from "@/lib/types";
-import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { tasks } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 
 export const taskRouter = createTRPCRouter({
-  getByColumnId: publicProcedure
+  getByColumnId: protectedProcedure
     .input(z.object({ columnId: z.number() }))
     .query(async ({ ctx, input }) => {
       const columnTasks = await ctx.db.query.tasks.findMany({
@@ -15,17 +15,17 @@ export const taskRouter = createTRPCRouter({
 
       return columnTasks;
     }),
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(z.object({ id: z.number() }))
     .mutation(async ({ ctx, input }) => {
       return ctx.db.delete(tasks).where(eq(tasks.id, input.id));
     }),
-  create: publicProcedure
+  create: protectedProcedure
     .input(taskCreationSchema)
     .mutation(async ({ ctx, input }) => {
       return await ctx.db.insert(tasks).values(input);
     }),
-  update: publicProcedure
+  update: protectedProcedure
     .input(taskUpdateSchema)
     .mutation(async ({ ctx, input }) => {
       return await ctx.db

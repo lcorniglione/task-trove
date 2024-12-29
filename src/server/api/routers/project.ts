@@ -1,17 +1,17 @@
 import { projectFormSchema, projectUpdateFormSchema } from "@/lib/types";
-import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { projects } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 
 export const projectRouter = createTRPCRouter({
-  getAll: publicProcedure.query(async ({ ctx }) => {
+  getAll: protectedProcedure.query(async ({ ctx }) => {
     return ctx.db.query.projects.findMany({
       orderBy: (posts, { desc }) => [desc(posts.createdAt)],
     });
   }),
 
-  update: publicProcedure
+  update: protectedProcedure
     .input(projectUpdateFormSchema)
     .mutation(async ({ ctx, input: { projectId, ...rest } }) => {
       return ctx.db
@@ -20,7 +20,7 @@ export const projectRouter = createTRPCRouter({
         .where(eq(projects.id, parseInt(projectId)));
     }),
 
-  geyById: publicProcedure
+  geyById: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -33,7 +33,7 @@ export const projectRouter = createTRPCRouter({
       });
     }),
 
-  create: publicProcedure
+  create: protectedProcedure
     .input(projectFormSchema)
     .mutation(async ({ ctx, input }) => {
       return ctx.db

@@ -8,6 +8,8 @@ import { cache } from "react";
 
 import { appRouter, type AppRouter } from "@/server/api/root";
 import { createCallerFactory, createTRPCContext } from "@/server/api/trpc";
+import { getAuth } from "@clerk/nextjs/server";
+import { NextRequest } from "next/server";
 
 const createCaller = createCallerFactory(appRouter);
 
@@ -21,6 +23,7 @@ const createContext = cache(async () => {
 
   return createTRPCContext({
     headers: heads,
+    auth: getAuth(new NextRequest("https://notused.com", { headers: heads })),
   });
 });
 

@@ -1,11 +1,11 @@
 import { columnCreationSchema } from "@/lib/types";
-import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { columns } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 
 export const columnRouter = createTRPCRouter({
-  getByProjectId: publicProcedure
+  getByProjectId: protectedProcedure
     .input(z.object({ projectId: z.string() }))
     .query(async ({ ctx, input: { projectId } }) => {
       const projectColumns = await ctx.db.query.columns.findMany({
@@ -15,7 +15,7 @@ export const columnRouter = createTRPCRouter({
 
       return projectColumns;
     }),
-  create: publicProcedure
+  create: protectedProcedure
     .input(columnCreationSchema)
     .mutation(async ({ ctx, input }) => {
       const insertedObj = await ctx.db

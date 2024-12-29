@@ -1,12 +1,12 @@
 "use client";
 
+import { type AppRouter } from "@/server/api/root";
+import { RedirectToSignIn, SignedIn, SignedOut } from "@clerk/nextjs";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { loggerLink, unstable_httpBatchStreamLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import { useState } from "react";
-
-import { type AppRouter } from "@/server/api/root";
 import { getUrl, transformer } from "./shared";
 
 export const api = createTRPCReact<AppRouter>();
@@ -33,8 +33,13 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <api.Provider client={trpcClient} queryClient={queryClient}>
-        <ReactQueryDevtools />
-        {props.children}
+        <SignedIn>
+          {props.children}
+          <ReactQueryDevtools />
+        </SignedIn>
+        <SignedOut>
+          <RedirectToSignIn />
+        </SignedOut>
       </api.Provider>
     </QueryClientProvider>
   );
