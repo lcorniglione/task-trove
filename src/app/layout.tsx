@@ -4,6 +4,7 @@ import { Toaster } from "@/app/_components/ui/sonner";
 import "@/styles/globals.css";
 import { TRPCReactProvider } from "@/trpc/react";
 import { ClerkProvider } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import { Inter } from "next/font/google";
 
 const inter = Inter({
@@ -17,7 +18,13 @@ export const metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-export default function RootLayout({
+async function GeneralLayout({ children }: { children: React.ReactNode }) {
+  const { userId } = await auth();
+
+  return <>{userId ? <SideBar>{children}</SideBar> : children}</>;
+}
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -33,7 +40,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <TRPCReactProvider>
-              <SideBar>{children}</SideBar>
+              <GeneralLayout>{children}</GeneralLayout>
               <Toaster />
             </TRPCReactProvider>
           </ThemeProvider>
